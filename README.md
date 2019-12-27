@@ -1,5 +1,11 @@
 # ALPR in Unscontrained Scenarios
 
+##1227更新
+本版本目前舍弃了vehicle-detection这步，因为所用测试集中几乎所有图片只含一辆车，且车头或车尾占整张图片比重较大。变化主要有：
+1、输出时去掉对车辆画黄框这步，直接在整张图片中按比例用红线圈出车牌
+2、针对中文车牌，因cv2无法输出中文字符，改用PIL输出中文字符
+3、针对双层车牌，目前采用计算车牌识别狂左上角高度坐标的均值和方差进行；显然单层车牌该项方差应绝对小于双层车牌（经对图像质量较好的车牌测试，单层车牌该项方差在0.0001这个级别，而双层车牌该项方差在0.01这个级别）所以以0.001为方差阈值来划分单双层；而对每张双层车牌判断字符的上下层归属则采用：字符识别狂左上角高度坐标小于均值的属于上层，大于均值的属于下层；该解决方案对质量好的车牌图片识别率很高，但由于车牌图片产生于前一步的license-plate-detection，准确率不太高，会出现误识别或框出了车牌但角度奇怪的情况，对于这些情况，不太很好解决
+
 ## Introduction
 
 This repository contains the author's implementation of ECCV 2018 paper "License Plate Detection and Recognition in Unconstrained Scenarios".
